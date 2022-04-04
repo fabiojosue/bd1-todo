@@ -6,7 +6,7 @@ public abstract class BaseRepository<T> {
 
     protected final static String CONNECTION_STRING = "jdbc:mysql://localhost:3306/todo";
     protected final static String DB_USERNAME = "root";
-    protected final static String DB_PASSWORD = "rootroot";
+    protected final static String DB_PASSWORD = "admin123";
 
 
     protected Connection connect() throws SQLException {

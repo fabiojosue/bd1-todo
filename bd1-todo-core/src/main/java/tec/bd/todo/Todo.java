@@ -27,7 +27,7 @@ public class Todo {
         return this.todoRepository.findById(id);
     }
 
-    public TodoRecord add(TodoRecord record) {
+    public TodoRecord addTodoRecord(TodoRecord record) {
         Objects.requireNonNull(record);
         // Si el titulo es nulo, devolver exception
         if(null == record.getStartDate()) {
@@ -51,10 +51,22 @@ public class Todo {
         return this.todoRepository.update(record);
     }
 
-    public void delete(String id) {
+    public void deleteTodoRecord(String id) {
 
         // TODO: buscar si el record existe, y si existe borrarlo
         this.todoRepository.remove(id);
+    }
+
+    public List<TodoRecord> getStartDateRange(Date startDate, Date endDate) {
+        return this.todoRepository.findByBetweenStartDates(startDate, endDate);
+    }
+
+    public List<TodoRecord> searchInTitle(String textToSearch) {
+        return this.todoRepository.findByPatternInTitle(textToSearch);
+    }
+
+    public TodoRecord updateTodoRecord(TodoRecord todoRecord) {
+        return this.todoRepository.update(todoRecord);
     }
 
 }

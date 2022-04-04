@@ -66,7 +66,7 @@ public class TodoController {
         var todoRecord = GSON.fromJson(request.body(), TodoRecord.class);
         //TODO: si hay una exception capturar y retornar 500
 
-        var newTodo = this.todo.add(todoRecord);
+        var newTodo = this.todo.addTodoRecord(todoRecord);
 
         response.header("Content-Type", "application/json");
         response.header("Location", "/todos/" + newTodo.getId());
@@ -80,7 +80,7 @@ public class TodoController {
         // TODO: Si el todoId es nulo lanzar exception o devolver 404
 
         // TODO: poner try/catch aqui porque si el borrado falla no deberia retornar 200-OK
-        this.todo.delete(todoId);
+        this.todo.deleteTodoRecord(todoId);
         response.status(200);
         return new Message(200, "OK");
     }

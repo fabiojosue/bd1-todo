@@ -11,9 +11,9 @@ public class App
         var appContext = ApplicationContext.init();
         var todo = appContext.getTodo();
 
-        todo.add(new TodoRecord("Desayuno"));
-        todo.add(new TodoRecord("Almuerzo"));
-        todo.add(new TodoRecord("Cena"));
+        todo.addTodoRecord(new TodoRecord("Desayuno"));
+        todo.addTodoRecord(new TodoRecord("Almuerzo"));
+        todo.addTodoRecord(new TodoRecord("Cena"));
 
         var todos = todo.getAll();
 

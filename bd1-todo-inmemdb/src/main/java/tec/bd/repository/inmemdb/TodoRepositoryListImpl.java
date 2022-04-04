@@ -1,4 +1,5 @@
-package tec.bd.inmemdb;
+package tec.bd.repository.inmemdb;
+
 
 import tec.bd.todo.Status;
 import tec.bd.todo.TodoRecord;
@@ -45,6 +46,13 @@ public class TodoRepositoryListImpl implements TodoRepository {
 
     @Override
     public void remove(String id) {
+        var todoRecord = this.findById(id);
+
+        if (id.equals(null)){
+            System.out.println("No existe");
+        } else {
+            this.todoData.remove(todoRecord);
+        }
 
     }
 
