@@ -5,6 +5,7 @@ import tec.bd.todo.Status;
 import tec.bd.todo.TodoRecord;
 import tec.bd.todo.repository.TodoRepository;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -58,16 +59,39 @@ public class TodoRepositoryListImpl implements TodoRepository {
 
     @Override
     public TodoRecord update(TodoRecord todoRecord) {
-        return null;
+        if (todoRecord!=null) {
+            this.todoData.remove(findById(todoRecord.getId()));
+            this.todoData.add(todoRecord);
+            return todoRecord;
+        }
+        return todoRecord;
     }
 
     @Override
     public List<TodoRecord> findByPatternInTitle(String textToSearch) {
-        return null;
+        List<TodoRecord> patternList = new ArrayList<>();
+        for(TodoRecord tr : this.todoData){
+            if(tr.getTitle() != null){
+                if (tr.getTitle().contains(textToSearch)){
+                    patternList.add(tr);
+                }
+            }
+        }
+        return patternList;
     }
 
     @Override
     public List<TodoRecord> findByBetweenStartDates(Date startDate, Date endDate) {
-        return null;
+
+        List<TodoRecord> finalList = new ArrayList<>();
+        for(TodoRecord tr : this.todoData){
+            if ( (tr.getStartDate() != null) & (tr.getEndDate() != null) ){
+                if(tr.getStartDate().equals(startDate) & (tr.getEndDate().equals(endDate))){
+                    finalList.add(tr);
+                }
+            }
+        }
+
+        return finalList;
     }
 }

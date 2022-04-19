@@ -6,11 +6,16 @@
 	},
 	"item": [
 		{
-			"name": "01. Options",
+			"name": "00. Options",
 			"request": {
-				"method": "GET",
+				"method": "OPTIONS",
 				"header": [],
-				"url": null
+				"url": {
+					"raw": "{{base_url}}",
+					"host": [
+						"{{base_url}}"
+					]
+				}
 			},
 			"response": []
 		},
@@ -19,7 +24,17 @@
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": null
+				"url": {
+					"raw": "{{base_url}}/api/v1/todos",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"todos"
+					]
+				}
 			},
 			"response": []
 		},
@@ -167,12 +182,12 @@
 			"response": []
 		},
 		{
-			"name": "07. Search text in Title Copy",
+			"name": "09. Search text in Title",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{base_url}}/api/v1/todos/id",
+					"raw": "{{base_url}}/api/v1/todos/title?q=desayuno",
 					"host": [
 						"{{base_url}}"
 					],
@@ -180,7 +195,13 @@
 						"api",
 						"v1",
 						"todos",
-						"id"
+						"title"
+					],
+					"query": [
+						{
+							"key": "q",
+							"value": "desayuno"
+						}
 					]
 				}
 			},

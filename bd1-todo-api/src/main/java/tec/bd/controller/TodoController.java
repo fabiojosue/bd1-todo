@@ -99,16 +99,19 @@ public class TodoController {
 
     }
 
-    public List<Todo> searchInTitle(Request request, Response response) {
+    public List<TodoRecord> searchInTitle(Request request, Response response) {
 
         var textToSearch = request.queryParams("q");
 
         System.out.println(textToSearch);
 
-        return Collections.emptyList();
+        var result = this.todo.searchInTitle(textToSearch);
+        response.header("Content-Type", "application/json");
+
+        return result;
     }
 
-    public List<Todo> startDateRange(Request request, Response response) {
+    public List<TodoRecord> startDateRange(Request request, Response response) {
         var start = request.queryParams("start");
         var end = request.queryParams("end");
 
@@ -117,12 +120,14 @@ public class TodoController {
             var startDate = formatter.parse(start);
             var endDate = formatter.parse(end);
             System.out.println("Start :" + startDate + ", End: " + endDate);
+
+            var result = this.todo.getStartDateRange(startDate,endDate);
+            response.header("Content-Type","application/json");
+
+            return result;
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
-
 
         return Collections.emptyList();
     }

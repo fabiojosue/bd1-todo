@@ -25,7 +25,8 @@ public class Api
                 return Map.of(
                         "message", "TODOS API V1",
                         "find-all", "/api/v1/todos",
-                        "find-by-status", "/api/v1/todos/{status}");
+                        "find-by-status", "/api/v1/todos/{status}",
+                        "create", "/api/v1/todos");
         }, gson::toJson);
 
         path("/api/v1/todos", () -> {

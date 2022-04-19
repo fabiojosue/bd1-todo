@@ -4,9 +4,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestTemplate;
 import tec.bd.repository.inmemdb.TodoRepositoryListImpl;
+import tec.bd.todo.Status;
 import tec.bd.todo.TodoRecord;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -78,7 +80,40 @@ public class TodoRepositoryListImplTest {
 
         assertThat(actual).isNull();
 
+    }
 
+    @Test
+    public void update() throws Exception {
+
+    }
+
+    @Test
+    public void findByPatternInTitle() throws Exception {
+
+        TodoRecord todo = new TodoRecord("Test");
+        repository.save(todo);
+
+        var actual = repository.findByPatternInTitle("Tes");
+
+        assertThat(actual).contains(todo);
+    }
+
+    @Test
+    public void findByBetweenStartDates() throws Exception {
+        //Date firstDate1 = new Date(int year, int month, int date);
+        Date d1 = new Date(2022, 4, 1);
+        Date d2 = new Date(2022, 4, 3);
+        Date d3 = new Date(2022, 4, 9);
+        TodoRecord todo = new TodoRecord("Homework", "Finish my data bases homework", Status.NEW,d1,d2);
+        repository.save(todo);
+
+        //No null Test
+        var actual1 = repository.findByBetweenStartDates(d1,d2);
+        assertThat(actual1).contains(todo);
+
+        //Null Test
+        var actual2 = repository.findByBetweenStartDates(d1,d3);
+        assertThat(actual2).isEmpty();
     }
 
 }
