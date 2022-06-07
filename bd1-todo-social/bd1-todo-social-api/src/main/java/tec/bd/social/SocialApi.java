@@ -17,6 +17,7 @@ public class SocialApi
         WebApplicationContext context = WebApplicationContext.init();
         var authenticationClient = context.getAuthenticationClient();
         var ratingsService = context.getRatingService();
+        var reviewsService = context.getReviewsService();
         Gson gson = context.getGson();
 
         port(8082);
@@ -73,11 +74,26 @@ public class SocialApi
                     );
         }, gson::toJson);
 
+        // Borrar todos los ratings de un todoId
         delete("/ratings/:todo-id", (request, response) -> {
             var todoId = request.params("todo-id");
             ratingsService.deleteRating(todoId);
             response.status(200);
             return Map.of("Deleted", "OK");
+        }, gson::toJson);
+
+        // Obtener todos los reviews de un todoId
+        get("reviews/:todo-id", (request, response) -> {
+            var todoId = request.params("todo-id");
+
+            var review = reviewsService.getReviews(todoId);
+
+            if (null != review){
+                return review;
+            }
+
+            response.status(404);
+            return Map.of();
         }, gson::toJson);
 
     }

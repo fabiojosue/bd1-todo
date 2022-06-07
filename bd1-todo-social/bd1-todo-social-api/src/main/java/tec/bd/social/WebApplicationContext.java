@@ -12,8 +12,12 @@ import tec.bd.social.datasource.DBManager;
 import tec.bd.social.datasource.HikariDBManager;
 import tec.bd.social.repository.RatingsRepository;
 import tec.bd.social.repository.RatingsRepositoryImpl;
+import tec.bd.social.repository.ReviewsRepository;
+import tec.bd.social.repository.ReviewsRepositoryImpl;
 import tec.bd.social.service.RatingService;
 import tec.bd.social.service.RatingServiceImpl;
+import tec.bd.social.service.ReviewsService;
+import tec.bd.social.service.ReviewsServiceImpl;
 
 public class WebApplicationContext {
 
@@ -23,6 +27,9 @@ public class WebApplicationContext {
 
     private RatingsRepository ratingsRepository;
     private RatingService ratingService;
+
+    private ReviewsRepository reviewsRepository;
+    private ReviewsService reviewsService;
 
     private WebApplicationContext() {
 
@@ -35,6 +42,8 @@ public class WebApplicationContext {
         initDBManager(webAppContext);
         initRatingsRepository(webAppContext);
         initRatingsService(webAppContext);
+        initReviewsRepository(webAppContext);
+        initReviewsService(webAppContext);
 
         return webAppContext;
     }
@@ -56,6 +65,16 @@ public class WebApplicationContext {
     private static void initRatingsService(WebApplicationContext webApplicationContext){
         var ratingsRepository = webApplicationContext.ratingsRepository;
         webApplicationContext.ratingService = new RatingServiceImpl(ratingsRepository);
+    }
+
+    private static void initReviewsRepository(WebApplicationContext webApplicationContext){
+        var dbManager = webApplicationContext.dbManager;
+        webApplicationContext.reviewsRepository = new ReviewsRepositoryImpl(dbManager);
+    }
+
+    private static void initReviewsService(WebApplicationContext webApplicationContext){
+        var reviewsRepository = webApplicationContext.reviewsRepository;
+        webApplicationContext.reviewsService = new ReviewsServiceImpl(reviewsRepository);
     }
 
     private static void initDBManager(WebApplicationContext webApplicationContext) {
@@ -86,6 +105,10 @@ public class WebApplicationContext {
     public RatingService getRatingService(){
         return this.ratingService;
     }
+
+    public ReviewsService getReviewsService() {return this.reviewsService;}
+
+    public ReviewsRepository getReviewsRepository() {return this.reviewsRepository;}
 
     public Gson getGson() {
         return new GsonBuilder()
