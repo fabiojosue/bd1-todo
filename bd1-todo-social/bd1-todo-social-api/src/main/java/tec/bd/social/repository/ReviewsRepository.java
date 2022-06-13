@@ -6,6 +6,10 @@ import java.util.ArrayList;
 
 public interface ReviewsRepository {
 
+    Review newReview(Review review);
+
+    Review update(Review review);
+
     ArrayList<Review> getReviews(String todoId);
 
 }

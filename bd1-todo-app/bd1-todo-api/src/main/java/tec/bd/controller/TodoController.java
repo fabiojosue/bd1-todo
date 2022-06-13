@@ -40,7 +40,7 @@ public class TodoController {
         // TODO: Si el todoId es nulo lanzar exception o devolver 404
 
         var todoRecord = this.todo.getById(todoId);
-        if(null != todoRecord) {
+        if(null == todoRecord) {
             response.status(404);
         }
         response.header("Content-Type", "application/json");

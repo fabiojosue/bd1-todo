@@ -4,9 +4,11 @@ import java.util.Objects;
 
 public class Session {
 
-    public String sessionId;
+    private String clientId;
 
-    public SessionStatus status;
+    private String sessionId;
+
+    private SessionStatus status;
 
     public Session() {
 
@@ -17,6 +19,15 @@ public class Session {
         Objects.requireNonNull(status);
         this.sessionId = sessionId;
         this.status = status;
+    }
+
+    public Session(String clientId, String sessionId, SessionStatus status) {
+        Objects.requireNonNull(clientId);
+        Objects.requireNonNull(sessionId);
+        Objects.requireNonNull(status);
+        this.sessionId = sessionId;
+        this.status = status;
+        this.clientId = clientId;
     }
 
     public void setSessionId(String sessionId) {
@@ -34,4 +45,8 @@ public class Session {
     public void setStatus(SessionStatus status) {
         this.status = status;
     }
+
+    public String getClientId() { return clientId; }
+
+    public void setClientId(String clientId) { this.clientId = clientId; }
 }

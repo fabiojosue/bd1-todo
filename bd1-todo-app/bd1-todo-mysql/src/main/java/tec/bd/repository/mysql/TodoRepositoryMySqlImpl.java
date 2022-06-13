@@ -91,8 +91,8 @@ public class TodoRepositoryMySqlImpl extends BaseRepository<TodoRecord> implemen
     @Override
     public TodoRecord save(TodoRecord todoRecord) {
 
-//        return saveWithSentence(todoRecord);
-        return saveWithProcedure(todoRecord);
+        return saveWithSentence(todoRecord);
+//        return saveWithProcedure(todoRecord);
     }
 
     private TodoRecord saveWithSentence(TodoRecord todoRecord) {

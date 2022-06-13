@@ -6,7 +6,10 @@ public interface RatingsRepository {
 
     Rating findById(int id);
 
+    Rating createRating(Rating rating);
+
     float findAverage(String todoId);
 
     void deleteRating(String todoId);
+
 }

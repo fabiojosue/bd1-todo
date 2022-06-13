@@ -14,6 +14,16 @@ public class ReviewsServiceImpl implements ReviewsService{
     }
 
     @Override
+    public Review createReview(Review review) {
+        return this.reviewsRepository.newReview(review);
+    }
+
+    @Override
+    public Review updateReview(Review review) {
+        return this.reviewsRepository.update(review);
+    }
+
+    @Override
     public ArrayList<Review> getReviews(String todoId) {
         return this.reviewsRepository.getReviews(todoId);
     }

@@ -3,15 +3,14 @@ package tec.bd.social.repository;
 import tec.bd.social.Rating;
 import tec.bd.social.datasource.DBManager;
 
-import java.sql.CallableStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class RatingsRepositoryImpl extends BaseRepository<Rating> implements RatingsRepository{
 
     private static final String FIND_BY_RATING_ID_QUERY = "{call find_rating(?)}";
     private static final String CALCULATE_AVG_PROC = "{call rating_avg(?)}";
     private static final String DELETE_RATING_TODO_ID = "{call delete_rating(?)}";
+    private static final String INSERT_NEW_RATING = "{call create_rating(?,?,?,?)}";
 
     public RatingsRepositoryImpl(DBManager dbManager){
         super(dbManager);
@@ -29,6 +28,26 @@ public class RatingsRepositoryImpl extends BaseRepository<Rating> implements Rat
                 var rating = toEntity(resultSet);
                 return rating;
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    @Override
+    public Rating createRating(Rating rating) {
+        try {
+            var connection = this.connect();
+            var statement = connection.prepareStatement(INSERT_NEW_RATING);
+            java.sql.Timestamp sqlDate = new java.sql.Timestamp(rating.getCreatedAt().getTime());
+            statement.setString(1, rating.getTodoId());
+            statement.setTimestamp(2, sqlDate);
+            statement.setInt(3, rating.getRatingValue());
+            statement.setString(4, rating.getClientId());
+            this.query(statement);
+            return rating;
+
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -3,6 +3,8 @@ package tec.bd.social.service;
 import tec.bd.social.Rating;
 import tec.bd.social.repository.RatingsRepository;
 
+import java.util.Date;
+
 public class RatingServiceImpl implements  RatingService{
 
     private RatingsRepository ratingsRepository;
@@ -24,5 +26,13 @@ public class RatingServiceImpl implements  RatingService{
     @Override
     public void deleteRating(String todoId) {
         this.ratingsRepository.deleteRating(todoId);
+    }
+
+    @Override
+    public Rating newRating(Rating rating) {
+//        return ratingsRepository.createRating(
+//                new Rating(1, rating.getRatingValue(), rating.getTodoId(), rating.getClientId(), new Date())
+//        );
+        return this.ratingsRepository.createRating(rating);
     }
 }

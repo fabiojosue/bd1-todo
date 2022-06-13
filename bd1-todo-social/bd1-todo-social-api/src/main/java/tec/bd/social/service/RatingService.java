@@ -10,4 +10,6 @@ public interface RatingService {
 
     void deleteRating(String todoId);
 
+    Rating newRating(Rating rating);
+
 }
