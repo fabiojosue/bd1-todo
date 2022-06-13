@@ -16,6 +16,7 @@ public class SocialApi
     {
         WebApplicationContext context = WebApplicationContext.init();
         var authenticationClient = context.getAuthenticationClient();
+        var todoAuthentication = context.getTodoAuthentication();
         var ratingsService = context.getRatingService();
         var reviewsService = context.getReviewsService();
         Gson gson = context.getGson();

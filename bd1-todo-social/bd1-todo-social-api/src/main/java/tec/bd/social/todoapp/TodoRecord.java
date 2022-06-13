@@ -19,8 +19,8 @@ public class TodoRecord {
         this(title, null, Status.NEW, new Date(System.currentTimeMillis()), null);
     }
 
-    public TodoRecord(String title, String description) {
-        this(title, description, Status.NEW, new Date(System.currentTimeMillis()), null);
+    public TodoRecord(String title, Status status) {
+        this(title, "", status, new Date(System.currentTimeMillis()), null);
     }
 
     public TodoRecord(String title, String description, Status status, Date startDate, Date endDate) {

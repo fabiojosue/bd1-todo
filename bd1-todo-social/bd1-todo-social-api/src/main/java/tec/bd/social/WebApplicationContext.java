@@ -18,10 +18,15 @@ import tec.bd.social.service.RatingService;
 import tec.bd.social.service.RatingServiceImpl;
 import tec.bd.social.service.ReviewsService;
 import tec.bd.social.service.ReviewsServiceImpl;
+import tec.bd.social.todoapp.TodoAuthentication;
+import tec.bd.social.todoapp.TodoAuthenticationImpl;
+import tec.bd.social.todoapp.TodoResource;
 
 public class WebApplicationContext {
 
     private AuthenticationClient authenticationClient;
+
+    private TodoAuthentication todoAuthentication;
 
     private DBManager dbManager;
 
@@ -38,7 +43,7 @@ public class WebApplicationContext {
     public static WebApplicationContext init() {
         WebApplicationContext webAppContext = new WebApplicationContext();
         initAuthenticationClient(webAppContext);
-
+        initTodoAuthentication(webAppContext);
         initDBManager(webAppContext);
         initRatingsRepository(webAppContext);
         initRatingsService(webAppContext);
@@ -55,6 +60,15 @@ public class WebApplicationContext {
                 .build();
         AuthenticationResource authenticationResource = retrofit.create(AuthenticationResource.class);
         webApplicationContext.authenticationClient = new AuthenticationClientImpl(authenticationResource);
+    }
+
+    private static void initTodoAuthentication(WebApplicationContext webApplicationContext) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://localhost:8081/") // URL del servidor de todoAutenticacion
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        TodoResource todoResource = retrofit.create(TodoResource.class);
+        webApplicationContext.todoAuthentication = new TodoAuthenticationImpl(todoResource);
     }
 
     private static void initRatingsRepository(WebApplicationContext webApplicationContext){
@@ -97,6 +111,8 @@ public class WebApplicationContext {
     public AuthenticationClient getAuthenticationClient() {
         return this.authenticationClient;
     }
+
+    public TodoAuthentication getTodoAuthentication() {return this.todoAuthentication;}
 
     public RatingsRepository getRatingsRepository(){
         return this.ratingsRepository;

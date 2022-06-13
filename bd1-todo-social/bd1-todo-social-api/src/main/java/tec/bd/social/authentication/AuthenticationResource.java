@@ -8,4 +8,5 @@ public interface AuthenticationResource {
 
     @GET("sessions/validate")
     Call<Session> validateInServer(@Query("session") String session);
+
 }
