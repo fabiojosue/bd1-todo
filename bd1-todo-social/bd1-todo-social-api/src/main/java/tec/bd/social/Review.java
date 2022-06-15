@@ -1,5 +1,6 @@
 package tec.bd.social;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Review {
@@ -9,13 +10,23 @@ public class Review {
     private String todoId;
     private String clientId;
     private Date createdAt;
+    private ArrayList<String> imgs;
 
-    public Review(int reviewId, String reviewText, String todoId, String clientId, Date createdAt) {
+    public Review(int reviewId, String reviewText, String todoId, String clientId, Date createdAt, ArrayList<String> imgs) {
         this.reviewId = reviewId;
         this.reviewText = reviewText;
         this.todoId = todoId;
         this.clientId = clientId;
         this.createdAt = createdAt;
+        this.imgs = imgs;
+    }
+
+    public ArrayList<String> getImgs() {
+        return imgs;
+    }
+
+    public void setImgs(ArrayList<String> imgs) {
+        this.imgs = imgs;
     }
 
     public int getReviewId() {

@@ -3,7 +3,7 @@ package tec.bd.social.todoapp;
 import tec.bd.social.authentication.Session;
 import tec.bd.social.authentication.SessionStatus;
 
-public class TodoAuthenticationImpl implements  TodoAuthentication{
+public class TodoAuthenticationImpl implements TodoAuthentication{
 
     private TodoResource todoResource;
 
@@ -12,9 +12,9 @@ public class TodoAuthenticationImpl implements  TodoAuthentication{
     }
 
     @Override
-    public TodoRecord validateTodo(String todoId) {
+    public TodoRecord validateTodo(String sessionId, String todoId) {
         try {
-            return todoResource.validateInServer(todoId).execute().body();
+            return todoResource.validateInServer(sessionId, todoId).execute().body();
         } catch (Exception e) {
             e.printStackTrace();
             return new TodoRecord(todoId, Status.BLOCKED);

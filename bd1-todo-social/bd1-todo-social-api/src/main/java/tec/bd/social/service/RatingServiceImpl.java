@@ -14,8 +14,8 @@ public class RatingServiceImpl implements  RatingService{
     }
 
     @Override
-    public Rating getRating(int ratingId) {
-        return this.ratingsRepository.findById(ratingId);
+    public String getRating(String clientId, String todoId) {
+        return this.ratingsRepository.findById(clientId, todoId);
     }
 
     @Override
@@ -24,15 +24,12 @@ public class RatingServiceImpl implements  RatingService{
     }
 
     @Override
-    public void deleteRating(String todoId) {
-        this.ratingsRepository.deleteRating(todoId);
+    public void deleteRating(String clientId, String todoId) {
+        this.ratingsRepository.deleteRating(clientId, todoId);
     }
 
     @Override
     public Rating newRating(Rating rating) {
-//        return ratingsRepository.createRating(
-//                new Rating(1, rating.getRatingValue(), rating.getTodoId(), rating.getClientId(), new Date())
-//        );
         return this.ratingsRepository.createRating(rating);
     }
 }

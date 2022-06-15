@@ -2,6 +2,8 @@ package tec.bd.social;
 
 import com.google.gson.Gson;
 import tec.bd.social.authentication.SessionStatus;
+import tec.bd.social.todoapp.Status;
+import tec.bd.social.todoapp.TodoRecord;
 
 import java.util.Map;
 
@@ -45,9 +47,14 @@ public class SocialApi
         // Crear un nuevo Rating
         post("ratings/:todo-id", (request, response) -> {
             var sessionParam = request.headers("x-session-id");
+            var todoParam = request.params("todo-id");
+            var todo = todoAuthentication.validateTodo(sessionParam,todoParam);
+            if (todo.getStatus() == Status.BLOCKED){
+                halt(404, "Todo Not Found");
+            }
             var session = authenticationClient.validateSession(sessionParam);
             var ratingParams = gson.fromJson(request.body(), Rating.class);
-            ratingParams.setTodoId(request.params("todo-id"));
+            ratingParams.setTodoId(todoParam);
             ratingParams.setClientId(session.getClientId());
             try {
                 var rating = ratingsService.newRating(ratingParams);
@@ -58,25 +65,6 @@ public class SocialApi
                 return Map.of("Message", "Bad Credentials");
             }
         }, gson::toJson);
-
-        //Buscar un rating en especifico
-        get("ratings/:rating-id", (request, response) -> {
-            var ratingIdParam = request.params("rating-id");
-            var ratingId = Integer.parseInt(ratingIdParam);
-
-            var rating = ratingsService.getRating(ratingId);
-
-            if (null != rating){
-                return rating;
-            }
-
-            response.status(404);
-            return Map.of();
-//            response.header("Content-Type", "application/json");
-//            return Map.of(
-//                    "message", "Get rating for todo-id: " + ratingId);
-            }, gson::toJson);
-
 
         // Obtiene el valor promedio de los ratings de un todoId
         get("todos/:todo-id/rating", (request, response) -> {
@@ -92,19 +80,27 @@ public class SocialApi
                     );
         }, gson::toJson);
 
-        // Borrar todos los ratings de un todoId
+        // Borrar un ratings de un todoId con un user en especifico
         delete("/ratings/:todo-id", (request, response) -> {
-            var todoId = request.params("todo-id");
-            ratingsService.deleteRating(todoId);
-            response.status(200);
-            return Map.of("Deleted", "OK");
+            var sessionParam = request.headers("x-session-id");
+            var todoParam = request.params("todo-id");
+            var session = authenticationClient.validateSession(sessionParam);
+            var validateRating = ratingsService.getRating(session.getClientId(),todoParam);
+            if (validateRating != "" ) {
+                ratingsService.deleteRating(session.getClientId(),todoParam);
+                response.status(200);
+                return Map.of("Deleted", "OK");
+            }
+            response.status(404);
+            return Map.of("Review","Not found");
         }, gson::toJson);
 
         // Obtener todos los reviews de un todoId
         get("reviews/:todo-id", (request, response) -> {
-            var todoId = request.params("todo-id");
-
-            var review = reviewsService.getReviews(todoId);
+            var todoParam = request.params("todo-id");
+            var sessionParam = request.headers("x-session-id");
+            var session = authenticationClient.validateSession(sessionParam);
+            var review = reviewsService.getReviews(session.getClientId(),todoParam);
 
             if (null != review){
                 return review;
@@ -117,12 +113,61 @@ public class SocialApi
         //Crear un nuevo review
         post("reviews/:todo-id", (request, response) -> {
             var sessionParam = request.headers("x-session-id");
+            var todoParam = request.params("todo-id");
+            var todo = todoAuthentication.validateTodo(sessionParam,todoParam);
+            if (todo.getStatus() == Status.BLOCKED){
+                halt(404, "Todo Not Found");
+            }
             var session = authenticationClient.validateSession(sessionParam);
             var reviewParams = gson.fromJson(request.body(), Review.class);
-            reviewParams.setTodoId(request.params("todo-id"));
+            reviewParams.setTodoId(todoParam);
             reviewParams.setClientId(session.getClientId());
             try {
-                var review = reviewsService.createReview(reviewParams);
+                var validateReview = reviewsService.findReview(session.getClientId(),todoParam);
+                if (validateReview == "" ){
+                    var review = reviewsService.createReview(reviewParams);
+                    if (null != review){
+                        response.status(200);
+                        return review;
+                    }
+                }
+                response.status(404);
+                return Map.of();
+            } catch (Exception e) {
+                response.status(400);
+                return Map.of("Message", "Bad Credentials");
+            }
+        }, gson::toJson);
+
+        // Borrar todos el review de un client en un todoId
+        delete("/reviews/:todo-id", (request, response) -> {
+            var sessionParam = request.headers("x-session-id");
+            var todoParam = request.params("todo-id");
+            var session = authenticationClient.validateSession(sessionParam);
+            var validateReview = reviewsService.findReview(session.getClientId(),todoParam);
+            if (validateReview != "" ) {
+                reviewsService.deleteReview(session.getClientId(),todoParam);
+                response.status(200);
+                return Map.of("Deleted", "OK");
+            }
+            response.status(404);
+            return Map.of("Review","Not found");
+        }, gson::toJson);
+
+        // Editar un review existente
+        put("reviews/:todo-id", (request, response) -> {
+            var sessionParam = request.headers("x-session-id");
+            var todoParam = request.params("todo-id");
+            var todo = todoAuthentication.validateTodo(sessionParam,todoParam);
+            if (todo.getStatus() == Status.BLOCKED){
+                halt(404, "Todo Not Found");
+            }
+            var session = authenticationClient.validateSession(sessionParam);
+            var reviewParams = gson.fromJson(request.body(), Review.class);
+            reviewParams.setTodoId(todoParam);
+            reviewParams.setClientId(session.getClientId());
+            try {
+                var review = reviewsService.updateReview(reviewParams);
                 response.status(200);
                 if (null != review){
                     return review;
@@ -135,16 +180,26 @@ public class SocialApi
             }
         }, gson::toJson);
 
-        // Editar un review existente
-        put("reviews/:todo-id", (request, response) -> {
+        // Crear una nueva imagen
+        post("reviews/:todo-id/images", (request, response) -> {
+            var sessionParam = request.headers("x-session-id");
+            var todoParam = request.params("todo-id");
+            var todo = todoAuthentication.validateTodo(sessionParam,todoParam);
+            if (todo.getStatus() == Status.BLOCKED){
+                halt(404, "Todo Not Found");
+            }
+            var session = authenticationClient.validateSession(sessionParam);
             var reviewParams = gson.fromJson(request.body(), Review.class);
-            reviewParams.setTodoId(request.params("todo-id"));
-            reviewParams.setClientId("user1");
+            reviewParams.setTodoId(todoParam);
+            reviewParams.setClientId(session.getClientId());
             try {
-                var review = reviewsService.updateReview(reviewParams);
-                response.status(200);
-                if (null != review){
-                    return review;
+                var validateReview = reviewsService.findReview(session.getClientId(),todoParam);
+                if (validateReview == "" ){
+                    var review = reviewsService.createReview(reviewParams);
+                    if (null != review){
+                        response.status(200);
+                        return review;
+                    }
                 }
                 response.status(404);
                 return Map.of();

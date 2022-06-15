@@ -4,12 +4,12 @@ import tec.bd.social.Rating;
 
 public interface RatingsRepository {
 
-    Rating findById(int id);
+    String findById(String clientId, String todoId);
 
     Rating createRating(Rating rating);
 
     float findAverage(String todoId);
 
-    void deleteRating(String todoId);
+    void deleteRating(String clientId, String todoId);
 
 }

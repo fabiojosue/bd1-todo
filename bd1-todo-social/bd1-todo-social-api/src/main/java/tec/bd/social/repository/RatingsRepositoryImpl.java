@@ -7,9 +7,9 @@ import java.sql.*;
 
 public class RatingsRepositoryImpl extends BaseRepository<Rating> implements RatingsRepository{
 
-    private static final String FIND_BY_RATING_ID_QUERY = "{call find_rating(?)}";
+    private static final String FIND_BY_RATING_ID_QUERY = "{call find_rating(?,?)}";
     private static final String CALCULATE_AVG_PROC = "{call rating_avg(?)}";
-    private static final String DELETE_RATING_TODO_ID = "{call delete_rating(?)}";
+    private static final String DELETE_RATING_TODO_ID = "{call delete_rating(?,?)}";
     private static final String INSERT_NEW_RATING = "{call create_rating(?,?,?,?)}";
 
     public RatingsRepositoryImpl(DBManager dbManager){
@@ -18,20 +18,21 @@ public class RatingsRepositoryImpl extends BaseRepository<Rating> implements Rat
 
 
     @Override
-    public Rating findById(int ratingId) {
+    public String findById(String clientId, String todoId) {
         try {
             var connection = this.connect();
             var statement = connection.prepareStatement(FIND_BY_RATING_ID_QUERY);
-            statement.setInt(1, ratingId);
+            statement.setString(1, clientId);
+            statement.setString(2, todoId);
             var resultSet = this.query(statement);
             while(resultSet.next()) {
-                var rating = toEntity(resultSet);
-                return rating;
+                var result = resultSet.getString("todoId");
+                return result;
             }
+            return "";
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return null;
     }
 
@@ -76,13 +77,13 @@ public class RatingsRepositoryImpl extends BaseRepository<Rating> implements Rat
     }
 
     @Override
-    public void deleteRating(String todoId) {
+    public void deleteRating(String clientId, String todoId) {
         try {
-            var connect = this.connect();
-            var statement = connect.prepareStatement(DELETE_RATING_TODO_ID);
-            statement.setString(1, todoId);
-            var actual = this.query(statement);
-            System.out.println("Actual: " + actual);
+            var connection = this.connect();
+            var statement = connection.prepareStatement(DELETE_RATING_TODO_ID);
+            statement.setString(1, clientId);
+            statement.setString(2, todoId);
+            this.query(statement);
         } catch (SQLException e) {
             e.printStackTrace();
         }

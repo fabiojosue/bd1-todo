@@ -24,7 +24,17 @@ public class ReviewsServiceImpl implements ReviewsService{
     }
 
     @Override
-    public ArrayList<Review> getReviews(String todoId) {
-        return this.reviewsRepository.getReviews(todoId);
+    public String findReview(String clientId, String todoId) {
+        return this.reviewsRepository.find(clientId, todoId);
+    }
+
+    @Override
+    public void deleteReview(String clientId, String todoId) {
+        this.reviewsRepository.delete(clientId, todoId);
+    }
+
+    @Override
+    public ArrayList<Object> getReviews(String clientId, String todoId) {
+        return this.reviewsRepository.getReviews(clientId,todoId);
     }
 }

@@ -9,5 +9,9 @@ public interface ReviewsService {
 
     Review updateReview(Review review);
 
-    ArrayList<Review> getReviews(String todoId);
+    String findReview(String clientId, String todoId);
+
+    void deleteReview(String clientId, String todoId);
+
+    ArrayList<Object> getReviews(String clientId, String todoId);
 }
