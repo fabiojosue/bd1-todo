@@ -1,5 +1,6 @@
 package tec.bd.social.service;
 
+import tec.bd.social.Image;
 import tec.bd.social.repository.ReviewsRepository;
 
 import java.util.ArrayList;
@@ -19,6 +20,11 @@ public class ReviewsServiceImpl implements ReviewsService{
     }
 
     @Override
+    public Image createImg(Image image) {
+        return this.reviewsRepository.newImage(image);
+    }
+
+    @Override
     public Review updateReview(Review review) {
         return this.reviewsRepository.update(review);
     }
@@ -31,6 +37,11 @@ public class ReviewsServiceImpl implements ReviewsService{
     @Override
     public void deleteReview(String clientId, String todoId) {
         this.reviewsRepository.delete(clientId, todoId);
+    }
+
+    @Override
+    public int countImg(String clientId, String todoId) {
+        return this.reviewsRepository.countImages(clientId, todoId);
     }
 
     @Override

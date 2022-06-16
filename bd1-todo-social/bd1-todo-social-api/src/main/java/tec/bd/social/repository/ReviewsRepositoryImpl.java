@@ -111,8 +111,12 @@ public class ReviewsRepositoryImpl extends BaseRepository<Review> implements Rev
             statement.setString(1, todoId);
             statement.setString(2, clientId);
             var resultSet = this.query(statement);
-            var total = resultSet.getInt("totalImg");
-            return total;
+            while(resultSet.next()) {
+                var total = resultSet.getInt("totalImg");
+                return total;
+            }
+
+
 
         } catch (SQLException e) {
             e.printStackTrace();

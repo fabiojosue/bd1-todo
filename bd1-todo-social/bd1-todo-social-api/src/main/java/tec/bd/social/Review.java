@@ -10,23 +10,23 @@ public class Review {
     private String todoId;
     private String clientId;
     private Date createdAt;
-    private ArrayList<String> imgs;
+    private ArrayList<String> images;
 
-    public Review(int reviewId, String reviewText, String todoId, String clientId, Date createdAt, ArrayList<String> imgs) {
+    public Review(int reviewId, String reviewText, String todoId, String clientId, Date createdAt, ArrayList<String> images) {
         this.reviewId = reviewId;
         this.reviewText = reviewText;
         this.todoId = todoId;
         this.clientId = clientId;
         this.createdAt = createdAt;
-        this.imgs = imgs;
+        this.images = images;
     }
 
     public ArrayList<String> getImgs() {
-        return imgs;
+        return images;
     }
 
     public void setImgs(ArrayList<String> imgs) {
-        this.imgs = imgs;
+        this.images = imgs;
     }
 
     public int getReviewId() {

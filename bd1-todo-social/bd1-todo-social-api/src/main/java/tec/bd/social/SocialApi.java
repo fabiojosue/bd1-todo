@@ -41,15 +41,24 @@ public class SocialApi
         options("/", (request, response) -> {
             response.header("Content-Type", "application/json");
             return Map.of(
-                    "message", "SOCIAL API V1");
+                    ".Message", "SOCIAL API V1",
+                    "POST ratings/:todo-id","Crear un nuevo Rating a un todoId con el user del session",
+                    "POST reviews/:todo-id","Crear un nuevo review a un todoId con el user del session",
+                    "POST reviews/:todo-id/images","Crear una nueva imagen a un todoId con el user del session",
+                    "GET todos/:todo-id/rating","Obtiene el valor promedio de los ratings de un todoId",
+                    "GET reviews/:todo-id","Obtener todos los reviews de un todoId",
+                    "DELETE /ratings/:todo-id","Borrar un rating a un todoId con el user del session",
+                    "DELETE /reviews/:todo-id","Borrar el review a un todoId con el user del session",
+                    "PUT reviews/:todo-id","Editar un review existente a un todoId con el user del session"
+            );
         }, gson::toJson);
 
-        // Crear un nuevo Rating
+        // Crear un nuevo Rating a un todoId con el user del session
         post("ratings/:todo-id", (request, response) -> {
             var sessionParam = request.headers("x-session-id");
             var todoParam = request.params("todo-id");
             var todo = todoAuthentication.validateTodo(sessionParam,todoParam);
-            if (todo.getStatus() == Status.BLOCKED){
+            if (null == todo || todo.getStatus() == Status.BLOCKED){
                 halt(404, "Todo Not Found");
             }
             var session = authenticationClient.validateSession(sessionParam);
@@ -80,7 +89,7 @@ public class SocialApi
                     );
         }, gson::toJson);
 
-        // Borrar un ratings de un todoId con un user en especifico
+        // Borrar un rating a un todoId con el user del session
         delete("/ratings/:todo-id", (request, response) -> {
             var sessionParam = request.headers("x-session-id");
             var todoParam = request.params("todo-id");
@@ -110,12 +119,12 @@ public class SocialApi
             return Map.of();
         }, gson::toJson);
 
-        //Crear un nuevo review
+        //Crear un nuevo review a un todoId con el user del session
         post("reviews/:todo-id", (request, response) -> {
             var sessionParam = request.headers("x-session-id");
             var todoParam = request.params("todo-id");
             var todo = todoAuthentication.validateTodo(sessionParam,todoParam);
-            if (todo.getStatus() == Status.BLOCKED){
+            if (null == todo || todo.getStatus() == Status.BLOCKED){
                 halt(404, "Todo Not Found");
             }
             var session = authenticationClient.validateSession(sessionParam);
@@ -139,7 +148,7 @@ public class SocialApi
             }
         }, gson::toJson);
 
-        // Borrar todos el review de un client en un todoId
+        // Borrar el review a un todoId con el user del session
         delete("/reviews/:todo-id", (request, response) -> {
             var sessionParam = request.headers("x-session-id");
             var todoParam = request.params("todo-id");
@@ -154,12 +163,12 @@ public class SocialApi
             return Map.of("Review","Not found");
         }, gson::toJson);
 
-        // Editar un review existente
+        // Editar un review existente a un todoId con el user del session
         put("reviews/:todo-id", (request, response) -> {
             var sessionParam = request.headers("x-session-id");
             var todoParam = request.params("todo-id");
             var todo = todoAuthentication.validateTodo(sessionParam,todoParam);
-            if (todo.getStatus() == Status.BLOCKED){
+            if (null == todo || todo.getStatus() == Status.BLOCKED){
                 halt(404, "Todo Not Found");
             }
             var session = authenticationClient.validateSession(sessionParam);
@@ -180,29 +189,30 @@ public class SocialApi
             }
         }, gson::toJson);
 
-        // Crear una nueva imagen
+        // Crear una nueva imagen a un todoId con el user del session
         post("reviews/:todo-id/images", (request, response) -> {
             var sessionParam = request.headers("x-session-id");
             var todoParam = request.params("todo-id");
             var todo = todoAuthentication.validateTodo(sessionParam,todoParam);
-            if (todo.getStatus() == Status.BLOCKED){
+            if (null == todo || todo.getStatus() == Status.BLOCKED){
                 halt(404, "Todo Not Found");
             }
             var session = authenticationClient.validateSession(sessionParam);
-            var reviewParams = gson.fromJson(request.body(), Review.class);
-            reviewParams.setTodoId(todoParam);
-            reviewParams.setClientId(session.getClientId());
+            var imgParams = gson.fromJson(request.body(), Image.class);
+            imgParams.setTodoId(todoParam);
+            imgParams.setClientId(session.getClientId());
             try {
                 var validateReview = reviewsService.findReview(session.getClientId(),todoParam);
-                if (validateReview == "" ){
-                    var review = reviewsService.createReview(reviewParams);
-                    if (null != review){
+                if (validateReview != "" ){
+                    var imgNo = reviewsService.countImg(session.getClientId(),todoParam);
+                    if (imgNo <= 2) {
+                        var image = reviewsService.createImg(imgParams);
                         response.status(200);
-                        return review;
+                        return image;
                     }
                 }
-                response.status(404);
-                return Map.of();
+                response.status(409);
+                return Map.of("Message","Review has max amount of images");
             } catch (Exception e) {
                 response.status(400);
                 return Map.of("Message", "Bad Credentials");
