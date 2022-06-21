@@ -36,3 +36,7 @@ dotnet new xunit -n BD1.Todo.API.Client.UnitTest -lang "C#"
 
 ### Tarea 3
 Nota: 10.
+
+### Proyecto 2
+Nota: 10.
+Algunos nombres en la clases podrían cambiarse para reflejen mejor la intención.
